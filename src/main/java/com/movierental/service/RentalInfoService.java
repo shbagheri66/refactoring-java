@@ -1,19 +1,23 @@
 package com.movierental.service;
 
+import com.movierental.exception.NotFoundException;
 import com.movierental.model.Customer;
 import com.movierental.model.Movie;
 import com.movierental.model.MovieRental;
+import com.movierental.repository.InMemoryMovieRepository;
+import com.movierental.repository.MovieRepository;
 
 import java.util.HashMap;
 
 public class RentalInfoService {
 
+  private final MovieRepository movieRepository;
+
+  public RentalInfoService(MovieRepository movieRepository) {
+    this.movieRepository = movieRepository;
+  }
+
   public String statement(Customer customer) {
-    HashMap<String, Movie> movies = new HashMap();
-    movies.put("F001", new Movie("You've Got Mail", "regular"));
-    movies.put("F002", new Movie("Matrix", "regular"));
-    movies.put("F003", new Movie("Cars", "childrens"));
-    movies.put("F004", new Movie("Fast & Furious X", "new"));
 
     double totalAmount = 0;
     int frequentEnterPoints = 0;
@@ -21,17 +25,22 @@ public class RentalInfoService {
     for (MovieRental r : customer.getRentals()) {
       double thisAmount = 0;
 
+      // find the movie
+      Movie movie = movieRepository.findById(r.getMovieId())
+              .orElseThrow(() -> new NotFoundException("Unknown movie ID: " + r.getMovieId()));
+
+      String movieCode = movie.getCode().getValue();
       // determine amount for each movie
-      if (movies.get(r.getMovieId()).getCode().equals("regular")) {
+      if (movieCode.equals("regular")) {
         thisAmount = 2;
         if (r.getDays() > 2) {
           thisAmount = ((r.getDays() - 2) * 1.5) + thisAmount;
         }
       }
-      if (movies.get(r.getMovieId()).getCode().equals("new")) {
+      if (movieCode.equals("new")) {
         thisAmount = r.getDays() * 3;
       }
-      if (movies.get(r.getMovieId()).getCode().equals("childrens")) {
+      if (movieCode.equals("childrens")) {
         thisAmount = 1.5;
         if (r.getDays() > 3) {
           thisAmount = ((r.getDays() - 3) * 1.5) + thisAmount;
@@ -41,10 +50,10 @@ public class RentalInfoService {
       //add frequent bonus points
       frequentEnterPoints++;
       // add bonus for a two day new release rental
-      if (movies.get(r.getMovieId()).getCode() == "new" && r.getDays() > 2) frequentEnterPoints++;
+      if (movieCode == "new" && r.getDays() > 2) frequentEnterPoints++;
 
       //print figures for this rental
-      result += "\t" + movies.get(r.getMovieId()).getTitle() + "\t" + thisAmount + "\n";
+      result += "\t" + movie.getTitle() + "\t" + thisAmount + "\n";
       totalAmount = totalAmount + thisAmount;
     }
     // add footer lines
