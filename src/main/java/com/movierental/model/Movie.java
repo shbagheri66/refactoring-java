@@ -1,3 +1,5 @@
+package com.movierental.model;
+
 public class Movie {
     private String title;
     private String code;
