@@ -20,10 +20,10 @@ public class InMemoryMovieRepository implements MovieRepository {
 
     // create a map of example movies
     private static final Map<String, Movie> MOVIES = Map.of(
-            "F001", new Movie("You've Got Mail", MovieCode.REGULAR),
-            "F002", new Movie("Matrix", MovieCode.REGULAR),
-            "F003", new Movie("Cars", MovieCode.CHILDRENS),
-            "F004", new Movie("Fast & Furious X", MovieCode.NEW_MOVIE)
+            "F001", new Movie("F001", "You've Got Mail", MovieCode.REGULAR),
+            "F002", new Movie("F002","Matrix", MovieCode.REGULAR),
+            "F003", new Movie("F003","Cars", MovieCode.CHILDRENS),
+            "F004", new Movie("F004","Fast & Furious X", MovieCode.NEW_MOVIE)
     );
 
     @Override

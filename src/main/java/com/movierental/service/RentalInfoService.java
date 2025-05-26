@@ -1,13 +1,10 @@
 package com.movierental.service;
 
 import com.movierental.exception.NotFoundException;
-import com.movierental.model.Customer;
 import com.movierental.model.Movie;
 import com.movierental.model.MovieRental;
-import com.movierental.repository.InMemoryMovieRepository;
+import com.movierental.model.RentalHistory;
 import com.movierental.repository.MovieRepository;
-
-import java.util.HashMap;
 
 public class RentalInfoService {
 
@@ -17,12 +14,12 @@ public class RentalInfoService {
     this.movieRepository = movieRepository;
   }
 
-  public String statement(Customer customer) {
+  public String statement(RentalHistory rentalHistory) {
 
     double totalAmount = 0;
     int frequentEnterPoints = 0;
-    String result = "Rental Record for " + customer.getName() + "\n";
-    for (MovieRental r : customer.getRentals()) {
+    String result = "Rental Record for " + rentalHistory.getCustomer().getName() + "\n";
+    for (MovieRental r : rentalHistory.getRentals()) {
       double thisAmount = 0;
 
       // find the movie
